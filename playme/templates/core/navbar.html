@@ -1,0 +1,43 @@
+<nav class="navbar navbar-default techfont custom-navbar">
+    <div class="container">
+      <ul class="nav navbar-nav">
+        <li><a class='navbar-brand bigbrand' href="/play/">Play Me</a></li>
+        <li class="nav navbar-nav">
+          {% if request.get_full_path == "/play/profile/" %}
+          <a href="{% url 'core:edit_profile' %}">Edit Profile</a>
+          {% endif %}</li>
+      </ul>
+
+      <ul class="nav navbar-nav navbar-right">
+        {% if user.is_authenticated %}
+          <li>
+            <a href="/play/snakeyes/" >Snake Eyes</a>
+          </li>
+          <li>
+            <a href="/play/war/">War</a>
+          </li>
+          <li>
+            <a href="/play/logout/" >Log out</a>
+          </li>
+          <li class="dropdown" id="menu1">
+                  <a class="dropdown-toggle" data-toggle="dropdown" href="#menu1">
+                  Welcome: {{ user.username }}
+                  <b class="caret"></b>
+                  </a>
+                  <ul class="dropdown-menu">
+                      <li><a href="/play/account">Your Account</a></li>
+                      <li><a href="/play/edit_account/">Edit Account</a></li>
+                      <li><a href="/play/change_password/">Change Password</a></li>
+                      <li class="divider"></li>
+                      <li><a href="/play/profile/">Profile</a></li>
+                  </ul>
+              </li>
+
+        {% else %}
+            <li><a class='nav navbar-right' href="/play/signup" >Register</a></li>
+            <li><a class='nav navbar-right' href="/play/login" ><span class="glyphicon glyphicon-user"></span></a></li>
+                  {% endif %}
+
+      </ul>
+  </div>
+</nav>

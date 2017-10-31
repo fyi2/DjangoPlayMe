@@ -1,0 +1,13 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+  <h2>Account Details </h2>
+<p>
+  Username : {{ user }}<br>
+  Firstname : {{ user.first_name }}<br>
+  Lastname : {{ user.last_name }}<br>
+  Email: {{ user.email }}<br>
+</p>
+
+{% endblock %}

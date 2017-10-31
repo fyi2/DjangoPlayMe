@@ -1,0 +1,143 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Play Me{% endblock %}
+
+{% block head_inject %}
+<script data-require="angular.js@*" data-semver="1.4.0-beta.6" src="https://code.angularjs.org/1.4.0-beta.6/angular.js"></script>
+<script type="text/javascript">
+  var player1_wins = 0 ;
+  var player2_wins = 0 ;
+  var leader = 0 ;
+  var betSize = 10 ;
+  var warBalance = 1.23 ;
+</script>
+
+{% endblock %}
+
+{% block content %}
+
+{% verbatim war %}
+
+      <div class="col-lg-6" >
+        <h1>Status & Rules</h1><br>
+        <h4>Status</h4>
+        <p id="betsize"></p>
+        <p id="currentwinner"></p>
+        <p id="player1"></p>
+          <p id="player2"></p><br>
+        <h4>Rules</h4>
+        <p>Each player turns up a card at the same time and the player with the higher card takes both cards and puts them, face down, on the bottom of his stack. If the cards are the same rank, it is War.
+          Each player turns up one card face down and one card face up. The player with the higher cards takes both piles (six cards).</p><br>
+          <h4>Payouts</H4>
+          <p>The house pays 85% of the cumulative winnings</p><br>
+          <button type="button" class="btn btn-info btn-success" data-toggle="modal" data-target="#myModal">Set Bet Size</button>
+      </div>
+      <div class="col-lg-6" data-ng-controller="warBrain" >
+        <h1>War!</h1>
+        <h2 ng-if="game.winner">Winner is <span ng-bind="game.winner"></span>.  </h2>
+        <button ng-if="game.winner" id ="again" type="button" class="btn btn-info" onclick="incrementScore()" ng-click="restart()" >Play Again?</button>
+        <button ng-if="game.winner" type="button" class="btn btn-success" onclick="settleUp()">Pay out</button>
+        <div ng-if="!game.winner">
+          <button type="button" class="btn btn-std" ng-click="game.rounds(1)">Play one round</button>
+          <button type="button" class="btn btn-warning" ng-click="game.rounds(10)">Play ten rounds</button>
+          <button type="button" class="btn btn-danger" ng-click="game.rounds(100)">Play one hundred rounds</button>
+          <hr>
+          <div class="player1">
+            <strong>You </strong> have {{ game.player1.totalCards() }} cards
+          </div>
+          <div class="player2">
+            <strong>House </strong> has {{ game.player2.totalCards() }} cards
+          </div>
+        </div>
+        <hr>
+        <div class="round-cards" data-ng-repeat="rnd in game.log | orderBy:'-number'">
+          <strong>Round {{rnd.number}} cards:</strong>
+          <ul>
+            <li data-ng-repeat="card in rnd.p1active">You the Player: {{card.display}}</li>
+            <li data-ng-repeat="card in rnd.p2active">The House: {{card.display}}</li>
+          </ul>
+          <strong>Round winner: {{rnd.round_winner}}</strong>
+          <ul>
+            <li>Resulting Cards for You: <strong>{{rnd.p1total}}</strong></li>
+            <li>Resulting Cards House: <strong>{{rnd.p2total}}</strong></li>
+          </ul>
+          <hr>
+        </div>
+      </div>
+      <div class="setBet">
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" role="dialog">
+          <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">The more you play the more we pay</h4>
+              </div>
+              <div class="modal-body">
+                <h2>Set Bet Size</h2>
+                <h3>OK so what is it going to be?</h3>
+                <form method="post">
+                  {% csrf_token %}
+                    Bet (between $1 and $50): <input type="number" id="myBet" min="1" max="50">
+                    <button type="submit" class="btn btn-success" data-dismiss="modal" onclick="setBet()" >Place Bet</button>
+                  </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-dismiss="modal">Just the default bet please</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+        <script src="/static/js/war.js"></script>
+    <script>
+    function incrementScore(){
+      leader = angular.element(document.querySelector('[data-ng-controller="warBrain"]')).scope().game.winner
+      if (leader == "The House"){
+        player2_wins += 1;
+      }else {
+        player1_wins += 1 ;
+      }
+      document.getElementById("betsize").innerHTML = "Each bet is "+betSize;
+      document.getElementById("currentwinner").innerHTML = "This rounds winner is "+leader;
+      document.getElementById("player1").innerHTML = "Your score = "+player1_wins;
+      document.getElementById("player2").innerHTML = "House score = "+player2_wins;
+    }
+    function setBet(){
+      betSize = $('#myBet').val();
+      document.getElementById("betsize").innerHTML = "Each bet is "+betSize;
+    }
+    function settleUp(){
+      console.log("Settling up");
+      console.log(player1_wins, player2_wins);
+      if (player1_wins > player2_wins){
+        warBalance = Math.floor((player1_wins-player2_wins)*.85*betSize)
+        console.log("player1_wins"+warBalance);
+        console.log(player1_wins, player2_wins, betSize);
+      } else {
+        warBalance = Math.floor((player2_wins-player1_wins)*betSize)
+        console.log("player2_wins"+warBalance);
+        console.log(player1_wins, player2_wins, betSize);
+        warBalance = warBalance*-1
+      }
+      document.getElementById('betResult').value = warBalance;
+      console.log(warBalance);
+      leader=1;
+      document.forms.hiddenForm.submit()
+    }
+    </script>
+  {% endverbatim war %}
+  <div id="hiddenForm" style="display: none" class="visibility=hidden">
+    <form class="" action="/play/peace/" name="hiddenForm" method="post">
+      {% csrf_token %}
+      <input type="hidden" name="betResult" id="betResult" value="warBalance">
+      <button type="submit" name="betBalance">Update Balance</button>
+    </form>
+  </div>
+
+  {% endblock %}

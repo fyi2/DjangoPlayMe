@@ -1,0 +1,68 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+  <h2>{{ user }} Profile Details </h2>
+<p>
+  <table width="30%">
+    <col style="width:25%">
+    <col style="width:25%">
+    <tr>
+      <td>User</td><td> {{ user }} </td>
+    </tr>
+    <tr>
+      <td>Description</td><td>{{ form.description }}</td>
+    </tr>
+    <tr>
+      <td>City</td><td> {{ form.city }} </td>
+    </tr>
+    <tr>
+      <td>Website</td><td>{{ form.website }}</td>
+    </tr>
+    <tr>
+      <td>Betting Balance</td><td>{{ form.betting_balance }}</td>
+    </tr>
+    <tr>
+      <td>Bank Balance</td><td>{{ form.bank_balance }}</td>
+    </tr>
+    <tr>
+      <td>Image</td><td>{{ form.image }}</td>
+    </tr>
+  </table>
+
+</p>
+<!-- Indicates a successful or positive action -->
+<!-- <a href="/play/transfer/"><button type="button" class="btn btn-success">Get Funds</button></a> -->
+<!-- Trigger the modal with a button -->
+<button type="button" class="btn btn-info btn-success" data-toggle="modal" data-target="#myModal">Get Funds</button>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">You can't win if you don't play</h4>
+      </div>
+      <div class="modal-body">
+        <h2>Transfer Funds</h2>
+        <h3>How much do you want to take out of your bank to increase your betting balance?</h3>
+        <form method="post">
+          {% csrf_token %}
+            Bank Balance = {{ form.bank_balance }} <br>
+            Transfer:<br> <input type="text" name="bank_balance"><br><br>
+            <button type="submit" class="btn btn-success">Transfer</button>
+          </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+{% endblock %}

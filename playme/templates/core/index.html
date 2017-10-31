@@ -1,0 +1,22 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Play Me{% endblock %}
+
+{% block content %}
+  <h2>Index:PLAY - Welcome</h2>
+  <div class="container">
+      <div class="row v-center">
+          <div class="col-xs-6">
+              <a href="/play/snakeyes/" class="thumbnail">
+              <img src="{% static "img/snake_eyes.jpg" %}" alt="Snake Eyes" />
+              </a>
+          </div>
+          <div class="col-xs-6">
+              <a href="/play/war/" class="thumbnail">
+                    <img class="vmiddle" src="{% static "img/war.png" %}" alt="War" />
+              </a>
+          </div>
+      </div>
+  </div>
+{% endblock %}

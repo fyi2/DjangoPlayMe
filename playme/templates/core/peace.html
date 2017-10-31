@@ -1,0 +1,29 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Peace{% endblock %}
+
+{% block content %}
+  <h2>Thank you for playing war</h2>
+  <div class="container">
+      <div class="row v-center">
+          <div class="col-xs-6">
+            {% if form.betResult|add:"0" > 0 %}
+              <h4>Congratulations {{ user}}</h4>
+              <h4>That little venture netted you {{ form.betResult }} dollars</h4>
+              <br>
+            {% else %}
+              <h4>Unfortunately today might not be your day</h4>
+              <h4>The House took {{ form.betResult }} dollars</h4>
+              <br>
+              <p>Would you like to play again?</p>
+            {% endif %}
+          </div>
+          <div class="col-xs-6">
+              <a href="/play/war/" class="thumbnail">
+                    <img class="vmiddle" src="{% static "img/war.png" %}" alt="War" />
+              </a>
+          </div>
+      </div>
+  </div>
+{% endblock %}

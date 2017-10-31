@@ -1,0 +1,26 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+
+
+{% block title %}Banking{% endblock %}
+
+{% block content %}
+<h2>Transfer Funds</h2>
+<h3>How much do you want to take out you bank to increase your betting balance?</h3>
+<form method="post">
+  {% csrf_token %}
+    {% for field in form %}
+         <div class="row">
+            {{ field.errors }}
+            {{ field.label_tag }} {{ field }}
+            {% if field.help_text %}
+            <div class="row">
+                  {{ field.help_text }}
+            </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-success">Transfer</button>
+  </form>
+{% endblock %}

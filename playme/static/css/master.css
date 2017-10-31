@@ -1,0 +1,11 @@
+.thumbnail img {
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.vmiddle {
+    float:none;
+    display:inline-block;
+    vertical-align:middle;
+    margin-right:-4px;
+}
